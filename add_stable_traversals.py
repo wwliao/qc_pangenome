@@ -37,10 +37,14 @@ def cvt2stable(pri, nonpri_seq, traversal):
                                 if h[1] == b[3]:
                                     b[3] = h[2]
                                     add_new = False
+                                else:
+                                    a.append(["*"])
                             else:
                                 if h[2] == b[2]:
                                     b[2] = h[1]
                                     add_new = False
+                                else:
+                                    a.append(["*"])
 
                 if add_new:
                     a.append([dir, h[0], h[1], h[2]])
