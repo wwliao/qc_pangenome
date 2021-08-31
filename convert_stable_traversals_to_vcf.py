@@ -135,7 +135,7 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                     chrom = m[1]
                     start = int(m[2])
                     end = int(m[3])
-                    vlen = end - start
+                    vlen = end - start + 1
                     vtype = "INV"
                     ref_allele = ref[chrom][start-1:start]
                     alt_allele = "<INV>"
