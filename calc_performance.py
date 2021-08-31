@@ -23,7 +23,7 @@ truth_tp = 0
 with open(args.truthcov) as infile:
     for line in infile:
         cols = line.strip().split("\t")
-        cov = float(cols[5])
+        cov = float(cols[7])
         if cov >= args.coverage:
             truth_tp += 1
 
@@ -33,7 +33,7 @@ query_tp = 0
 with open(args.querycov) as infile:
     for line in infile:
         cols = line.strip().split("\t")
-        cov = float(cols[5])
+        cov = float(cols[7])
         if cov >= args.coverage:
             query_tp += 1
 

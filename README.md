@@ -80,10 +80,8 @@
 4. Compute coverage proportion 
 
 	```sh
-	$ bedtools merge -i 10percent_roverlap.truth.bed > 10percent_roverlap.truth.merged.bed
-	$ bedtools merge -i 10percent_roverlap.query.bed > 10percent_roverlap.query.merged.bed
-	$ bedtools intersect -a 10percent_roverlap.truth.bed -b 10percent_roverlap.query.merged.bed -wao | bedtools groupby -g 1,2,3,4 -c 8 | awk -F'\t' -v OFS='\t' '{print $0,$5/($3-$2)}' > 10percent_roverlap.truth.cov.bed
-	$ bedtools intersect -a 10percent_roverlap.query.bed -b 10percent_roverlap.truth.merged.bed -wao | bedtools groupby -g 1,2,3,4 -c 8 | awk -F'\t' -v OFS='\t' '{print $0,$5/($3-$2)}' > 10percent_roverlap.query.cov.bed
+	$ bedtools coverage -a 10percent_roverlap.truth.bed -b 10percent_roverlap.query.bed > 10percent_roverlap.truth.cov.bed
+	$ bedtools coverage -a 10percent_roverlap.query.bed -b 10percent_roverlap.truth.bed > 10percent_roverlap.query.cov.bed
 	```
 
 5. Calculate performance
