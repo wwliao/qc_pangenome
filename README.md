@@ -53,7 +53,7 @@
 	$ bcftools view -i "SVTYPE='DEL' & SVLEN<=-50" -Ou -o HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.SV_DEL.vcf HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.vcf.gz
 
 	# Merged VCF
-	$ bcftools view -i "SVTYPE='DEL' & SVLEN<=-50" -Ou -o HG00438.merged.3.100.annot.final.reheader.explicit.sorted.SV_DEL.vcf HG00438.merged.3.100.annot.final.reheader.explicit.sorted.vcf.gz
+	$ bcftools view -i "SVTYPE='DEL' & SVLEN<=-50 & NCALLERS>1" -Ou -o HG00438.merged.3.100.annot.final.reheader.explicit.sorted.SV_DEL.nc2.vcf HG00438.merged.3.100.annot.final.reheader.explicit.sorted.vcf.gz
 	```
 
 2. Convert VCF to BED
@@ -61,5 +61,33 @@
 	```sh
 	$ python3 convert_vcf_to_bed.py HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.SV_DEL.vcf
 	$ python3 convert_vcf_to_bed.py HG00438.merged.3.100.annot.final.reheader.explicit.sorted.SV_DEL.vcf
+	```
+
+3. Consider only variants overlapping with at least 10% reciprocal overlap
+
+	```sh
+	$ cut -f 1-4 HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.SV_DEL.vcf > mc.del.bed
+	$ cut -f 1-4 HG00438.merged.3.100.annot.final.reheader.explicit.sorted.SV_DEL.nc2.vcf > truth.del.nc2.bed
+	$ bedtools intersect -a truth.del.nc2.bed -b mc.del.bed -f 0.1 -r -wa -wb > 10percent_roverlap.truth_query.bed
+	$ cut -f 1-4 10percent_roverlap.truth_query.bed | sort -k1,1 -k2,2n -k3,3n -u > 10percent_roverlap.truth.bed
+	$ cut -f 5-8 10percent_roverlap.truth_query.bed | sort -k1,1 -k2,2n -k3,3n -u > 10percent_roverlap.query.bed
+	```
+
+4. Compute coverage proportion 
+
+	```sh
+	$ bedtools merge -i 10percent_roverlap.truth.bed > 10percent_roverlap.truth.merged.bed
+	$ bedtools merge -i 10percent_roverlap.query.bed > 10percent_roverlap.query.merged.bed
+	$ bedtools intersect -a 10percent_roverlap.truth.bed -b 10percent_roverlap.query.merged.bed -wao | bedtools groupby -g 1,2,3,4 -c 8 | awk -F'\t' -v OFS='\t' '{print $0,$5/($3-$2)}' > 10percent_roverlap.truth.cov.bed
+	$ bedtools intersect -a 10percent_roverlap.query.bed -b 10percent_roverlap.truth.merged.bed -wao | bedtools groupby -g 1,2,3,4 -c 8 | awk -F'\t' -v OFS='\t' '{print $0,$5/($3-$2)}' > 10percent_roverlap.query.cov.bed
+	```
+
+5. Calculate performance
+
+	```sh
+	$ python3 calc_performance.py 10percent_roverlap.truth.cov.bed 10percent_roverlap.query.cov.bed
+	Recall: 87.94%
+	Precision: 89.38%
+	F1: 88.65%
 	```
 
