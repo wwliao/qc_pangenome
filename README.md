@@ -30,3 +30,8 @@
 	$ bcftools sort -Ou HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.vcf | bcftools norm -d exact -Oz -o HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.vcf.gz && bcftools index -t HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.vcf.gz
 	```
 
+6. Convert symbolic VCF to explicit VCF
+
+	```sh
+	$ python3 convert_symbolic_to_explicit_vcf.py -s HG00438 GCA_000001405.15_GRCh38_no_alt_analysis_set.fa HG00438.merged.3.100.annot.final.reheader.vcf
+	```
