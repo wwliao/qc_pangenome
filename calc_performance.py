@@ -2,6 +2,7 @@
 import argparse
 
 parser = argparse.ArgumentParser()
+parser.add_argument("-c", "--coverage", type=float, default=0.5)
 parser.add_argument("truth")
 parser.add_argument("query")
 parser.add_argument("truthcov")
@@ -24,7 +25,7 @@ with open(args.truthcov) as infile:
     for line in infile:
         cols = line.strip().split("\t")
         cov = float(cols[5])
-        if cov >= 0.5:
+        if cov >= args.coverage:
             truth_tp += 1
         else:
             truth_fn += 1
@@ -37,7 +38,7 @@ with open(args.querycov) as infile:
     for line in infile:
         cols = line.strip().split("\t")
         cov = float(cols[5])
-        if cov >= 0.5:
+        if cov >= args.coverage:
             query_tp += 1
         else:
             query_fp += 1
