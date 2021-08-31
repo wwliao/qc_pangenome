@@ -1,5 +1,7 @@
 # Quality Evaluation of Pangenome Graph
 
+## Preprocess pangenome VCF and merged VCF
+
 1. Extract single-sample records from a multi-sample VCF
 
 	```sh
@@ -34,4 +36,22 @@
 
 	```sh
 	$ python3 convert_symbolic_to_explicit_vcf.py -s HG00438 GCA_000001405.15_GRCh38_no_alt_analysis_set.fa HG00438.merged.3.100.annot.final.reheader.vcf
+	```
+
+7. Sort and index merged variant records
+
+	```sh
+	$ bcftools sort -Oz -o HG00438.merged.3.100.annot.final.reheader.explicit.sorted.vcf.gz HG00438.merged.3.100.annot.final.reheader.explicit.vcf && bcftools index -t HG00438.merged.3.100.annot.final.reheader.explicit.sorted.vcf.gz
+	```
+
+## Evaluate DEL >= 50bp
+
+1. Extract DEL from VCF 
+
+	```sh
+	# Minigraph-Cactus VCF
+	$ bcftools view -i "SVTYPE='DEL' & SVLEN<=-50" -Ou -o HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.SV_DEL.vcf HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.vcf.gz
+
+	# Merged VCF
+	$ bcftools view -i "SVTYPE='DEL' & SVLEN<=-50" -Ou -o HG00438.merged.3.100.annot.final.reheader.explicit.sorted.SV_DEL.vcf HG00438.merged.3.100.annot.final.reheader.explicit.sorted.vcf.gz
 	```
