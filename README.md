@@ -85,9 +85,6 @@
 5. Calculate performance
 
 	```sh
-	$ python3 calc_performance.py 10percent_roverlap.truth.cov.bed 10percent_roverlap.query.cov.bed
-	Recall: 87.94%
-	Precision: 89.38%
-	F1: 88.65%
+	$ python3 calc_performance.py truth.del.nc2.bed mc.del.bed 10percent_roverlap.truth.cov.bed 10percent_roverlap.query.cov.bed
 	```
 
