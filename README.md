@@ -98,4 +98,5 @@
 - Refine INV decomposition from stable allele traversals
 - Solve COMPLEX decomposition from stable allele traversals
 - Calculate SV calling performance metrics based on the GIAB stratification regions
+- Manually check FP/FN variants using IGV
 
