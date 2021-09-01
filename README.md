@@ -44,7 +44,7 @@
 	$ bcftools sort -Oz -o HG00438.merged.3.100.annot.final.reheader.explicit.sorted.vcf.gz HG00438.merged.3.100.annot.final.reheader.explicit.vcf && bcftools index -t HG00438.merged.3.100.annot.final.reheader.explicit.sorted.vcf.gz
 	```
 
-## Evaluate DEL >= 50bp
+## Evaluate performance for DEL >= 50bp
 
 1. Extract DEL from VCF 
 
@@ -61,32 +61,41 @@
 	```sh
 	$ python3 convert_vcf_to_bed.py HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.SV_DEL.vcf
 	$ python3 convert_merged_vcf_to_bed.py HG00438.merged.3.100.annot.final.reheader.explicit.sorted.SV_DEL.vcf
-	```
-
-3. Consider only variants overlapping with at least 10% reciprocal overlap
-
-	```sh
 	$ cut -f 1-4 HG00438.GRCh38-f1g-90-mc-aug11.allele_traversals.stable.sorted_rmdup.SV_DEL.bed > mc.del.bed
 	$ cut -f 1-4 HG00438.merged.3.100.annot.final.reheader.explicit.sorted.SV_DEL.bed > truth.del.bed
+	```
 
-	$ bedtools intersect -a mc.del.bed -b GRCh38_notinsegdups.bed -u > mc.del.nosegdup.bed
-	$ bedtools intersect -a truth.del.bed -b GRCh38_notinsegdups.bed -u > truth.del.nosegdup.bed
+3. Consider only variants in the dipcall confident regions
 
-	$ bedtools intersect -a truth.del.bed -b mc.del.bed -f 0.1 -r -wa -wb > 10percent_roverlap.truth_query.bed
+	```sh
+	$ bedtools intersect -a mc.del.bed -b HG00438.f1_assembly_v2_genbank.dip.bed -u > mc.del.conf.bed
+	$ bedtools intersect -a truth.del.bed -b HG00438.f1_assembly_v2_genbank.dip.bed -u > truth.del.conf.bed
+	```
+
+4. Consider only variants overlapping with at least 10% reciprocal overlap
+
+	```sh
+	$ bedtools intersect -a truth.del.conf.bed -b mc.del.conf.bed -f 0.1 -r -wa -wb > 10percent_roverlap.truth_query.bed
 	$ cut -f 1-4 10percent_roverlap.truth_query.bed | sort -k1,1 -k2,2n -k3,3n -u > 10percent_roverlap.truth.bed
 	$ cut -f 5-8 10percent_roverlap.truth_query.bed | sort -k1,1 -k2,2n -k3,3n -u > 10percent_roverlap.query.bed
 	```
 
-4. Compute coverage proportion 
+5. Compute coverage proportion 
 
 	```sh
 	$ bedtools coverage -a 10percent_roverlap.truth.bed -b 10percent_roverlap.query.bed > 10percent_roverlap.truth.cov.bed
 	$ bedtools coverage -a 10percent_roverlap.query.bed -b 10percent_roverlap.truth.bed > 10percent_roverlap.query.cov.bed
 	```
 
-5. Calculate performance
+6. Calculate performance
 
 	```sh
 	$ python3 calc_performance.py -c 0.5 truth.del.bed mc.del.bed 10percent_roverlap.truth.cov.bed 10percent_roverlap.query.cov.bed
 	```
+
+# TODO
+
+- Refine INV decomposition from stable allele traversals
+- Solve COMPLEX decomposition from stable allele traversals
+- Calculate SV calling performance metrics based on the GIAB stratification regions
 
