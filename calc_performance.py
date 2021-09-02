@@ -39,9 +39,9 @@ with open(args.querycov) as infile:
 
 query_fp = total_query - query_tp
 
-recall = truth_tp / (truth_tp + truth_fn)*100
-precision = query_tp / (query_tp + query_fp)*100
-f1 = 2*recall*precision / (recall + precision)
-print(f"Recall: {truth_tp}/({truth_tp} + {truth_fn}) = {recall:.2f}%")
-print(f"Precision: {query_tp}/({query_tp} + {query_fp}) = {precision:.2f}%")
-print(f"F1: {f1:.2f}%")
+truth_total = truth_tp + truth_fn
+query_total = query_tp + query_fp
+recall = truth_tp/truth_total*100
+precision = query_tp/query_total*100
+f1 = 2*recall*precision/(recall + precision)
+print(f"{truth_total}\t{truth_tp}\t{truth_fn}\t{query_total}\t{query_tp}\t{query_fp}\t{recall:.2f}%\t{precision:.2f}%\t{f1:.2f}%")
