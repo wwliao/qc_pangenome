@@ -41,7 +41,7 @@ query_fp = total_query - query_tp
 
 truth_total = truth_tp + truth_fn
 query_total = query_tp + query_fp
-recall = truth_tp/truth_total*100
-precision = query_tp/query_total*100
+recall = truth_tp/truth_total
+precision = query_tp/query_total
 f1 = 2*recall*precision/(recall + precision)
-print(f"{truth_total}\t{truth_tp}\t{truth_fn}\t{query_total}\t{query_tp}\t{query_fp}\t{recall:.2f}%\t{precision:.2f}%\t{f1:.2f}%")
+print(f"{truth_total}\t{truth_tp}\t{truth_fn}\t{query_total}\t{query_tp}\t{query_fp}\t{recall:.6f}\t{precision:.6f}\t{f1:.6f}")
