@@ -1,4 +1,4 @@
-# Quality Evaluation of Pangenome Graph
+# Quality Control of Pangenome Graph
 
 ## Preprocess pangenome VCF and merged VCF
 
