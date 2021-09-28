@@ -69,7 +69,7 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                             elif ref_len == 0:
                                 vtype = "INS"
                             else:
-                                vtype = "COMPLEX"
+                                vtype = "UNK"
                         else:
                             vlen = -1*ref_len
                             vtype = "DEL"
@@ -93,7 +93,7 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                             else:
                                 ref_allele = "N"
                                 alt_allele = seq
-                        elif vtype == "COMPLEX":
+                        elif vtype == "UNK":
                             if end > start:
                                 ref_allele = ref[chrom][start-1:end].seq
                                 alt_allele = ref_allele[0] + seq
@@ -105,7 +105,7 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                         if len(variant_indexes) > 1:
                             if vtype in ["SNP", "MNP"]:
                                 outfile.write(f"{chrom}\t{start}\t{id}-{j}\t{ref_allele}\t{alt_allele}\t60\t.\t.\tGT\t0/1\n")
-                            elif vtype == "COMPLEX":
+                            elif vtype == "UNK":
                                 if ref_allele == "N":
                                     bug_outfile.write(f"{chrom}\t{start}\t{id}-{j}\t{ref_allele}\t{alt_allele}\t60\t.\tSVTYPE={vtype};END={end};SVLEN={vlen}\tGT\t0/1\n")
                                 else:
@@ -118,7 +118,7 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                         else:
                             if vtype in ["SNP", "MNP"]:
                                 outfile.write(f"{chrom}\t{start}\t{id}\t{ref_allele}\t{alt_allele}\t60\t.\t.\tGT\t0/1\n")
-                            elif vtype == "COMPLEX":
+                            elif vtype == "UNK":
                                 if ref_allele == "N":
                                     bug_outfile.write(f"{chrom}\t{start}\t{id}-{j}\t{ref_allele}\t{alt_allele}\t60\t.\tSVTYPE={vtype};END={end};SVLEN={vlen}\tGT\t0/1\n")
                                 else:
