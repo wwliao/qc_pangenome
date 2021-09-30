@@ -68,6 +68,10 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                                     vtype = "MNP"
                             elif ref_len == 0:
                                 vtype = "INS"
+                            elif vlen > 0:
+                                vtype = "INS"
+                            elif vlen < 0:
+                                vtype = "DEL"
                             else:
                                 vtype = "UNK"
                         else:
@@ -83,8 +87,12 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                             alt_allele = seq
                             start += 1
                         elif vtype == "INS":
-                            ref_allele = ref[chrom][start].seq
-                            alt_allele = ref_allele + seq
+                            if end >= start:
+                                ref_allele = ref[chrom][start].seq
+                                alt_allele = ref_allele + seq
+                            else:
+                                ref_allele = "N"
+                                alt_allele = seq
                         elif vtype == "DEL":
                             if end > start:
                                 ref_allele = ref[chrom][start-1:end].seq
@@ -111,7 +119,7 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                                 else:
                                     outfile.write(f"{chrom}\t{start}\t{id}-{j}\t{ref_allele}\t{alt_allele}\t60\t.\tSVTYPE={vtype};END={end};SVLEN={vlen}\tGT\t0/1\n")
                             else:
-                                if vtype == "DEL" and ref_allele == "N":
+                                if vtype in ["DEL", "INS"] and ref_allele == "N":
                                     bug_outfile.write(f"{chrom}\t{start}\t{id}-{j}\t{ref_allele}\t{alt_allele}\t60\t.\tSVTYPE={vtype};END={end};SVLEN={vlen}\tGT\t0/1\n")
                                 else:
                                     outfile.write(f"{chrom}\t{start}\t{id}-{j}\t{ref_allele}\t{alt_allele}\t60\t.\tSVTYPE={vtype};END={end};SVLEN={vlen}\tGT\t0/1\n")
@@ -124,7 +132,7 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                                 else:
                                     outfile.write(f"{chrom}\t{start}\t{id}\t{ref_allele}\t{alt_allele}\t60\t.\tSVTYPE={vtype};END={end};SVLEN={vlen}\tGT\t0/1\n")
                             else:
-                                if vtype == "DEL" and ref_allele == "N":
+                                if vtype in ["DEL", "INS"] and ref_allele == "N":
                                     bug_outfile.write(f"{chrom}\t{start}\t{id}\t{ref_allele}\t{alt_allele}\t60\t.\tSVTYPE={vtype};END={end};SVLEN={vlen}\tGT\t0/1\n")
                                 else:
                                     outfile.write(f"{chrom}\t{start}\t{id}\t{ref_allele}\t{alt_allele}\t60\t.\tSVTYPE={vtype};END={end};SVLEN={vlen}\tGT\t0/1\n")
