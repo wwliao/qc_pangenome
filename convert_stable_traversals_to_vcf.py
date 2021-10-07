@@ -88,8 +88,9 @@ with open(args.stable_traversals) as infile, open(f"{prefix}.vcf", "w") as outfi
                             start += 1
                         elif vtype == "INS":
                             if end >= start:
-                                ref_allele = ref[chrom][start].seq
-                                alt_allele = ref_allele + seq
+                                ref_allele = ref[chrom][start-1:end].seq
+                                alt_allele = ref_allele[0] + seq
+
                             else:
                                 ref_allele = "N"
                                 alt_allele = seq
